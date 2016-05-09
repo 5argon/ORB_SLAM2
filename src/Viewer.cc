@@ -51,6 +51,21 @@ Viewer::Viewer(System* pSystem, FrameDrawer *pFrameDrawer, MapDrawer *pMapDrawer
     mViewpointF = fSettings["Viewer.ViewpointF"];
 }
 
+void Viewer::SetOriginalVideo(const cv::Mat im)
+{
+    originalVideo = im;
+}
+
+void Viewer::SetResultVideo(const cv::Mat im)
+{
+    resultVideo = im;
+}
+
+void Viewer::SetAuxVideo(const cv::Mat im)
+{
+    auxVideo = im;
+}
+
 void Viewer::Run()
 {
     mbFinished = false;
@@ -86,7 +101,10 @@ void Viewer::Run()
     pangolin::OpenGlMatrix Twc;
     Twc.SetIdentity();
 
-    cv::namedWindow("ORB-SLAM2: Current Frame");
+    cv::namedWindow("ORB-SLAM2: asjidajdaiCurrent Frame");
+    cv::namedWindow("Original",cv::WINDOW_AUTOSIZE);
+    cv::namedWindow("Result",cv::WINDOW_AUTOSIZE);
+    cv::namedWindow("Aux",cv::WINDOW_AUTOSIZE);
 
     bool bFollow = true;
     bool bLocalizationMode = false;
@@ -95,6 +113,7 @@ void Viewer::Run()
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // Tracker assigned this to Viewer (SetCurrentOpenGLCameraMatrix)
         mpMapDrawer->GetCurrentOpenGLCameraMatrix(Twc);
 
         if(menuFollowCamera && bFollow)
@@ -135,6 +154,18 @@ void Viewer::Run()
 
         cv::Mat im = mpFrameDrawer->DrawFrame();
         cv::imshow("ORB-SLAM2: Current Frame",im);
+        if(!originalVideo.empty())
+        {
+            cv::imshow("Original",originalVideo);
+        }
+        if(!resultVideo.empty())
+        {
+            cv::imshow("Result", resultVideo);
+        }
+        if(!auxVideo.empty())
+        {
+            cv::imshow("Aux", auxVideo);
+        }
         cv::waitKey(mT);
 
         if(menuReset)

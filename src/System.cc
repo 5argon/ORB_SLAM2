@@ -157,6 +157,21 @@ cv::Mat System::TrackStereo(const cv::Mat &imLeft, const cv::Mat &imRight, const
     return mpTracker->GrabImageStereo(imLeft,imRight,timestamp);
 }
 
+cv::Mat System::GetCurrentCameraMatrix()
+{
+    return mpMapDrawer->GetCurrentCameraMatrix();
+}
+
+void System::FeedOutputDisplay(cv::Mat im)
+{
+    mpViewer->SetResultVideo(im);
+}
+
+void System::FeedAuxDisplay(cv::Mat im)
+{
+    mpViewer->SetAuxVideo(im);
+}
+
 cv::Mat System::TrackRGBD(const cv::Mat &im, const cv::Mat &depthmap, const double &timestamp)
 {
     if(mSensor!=RGBD)
@@ -209,6 +224,8 @@ cv::Mat System::TrackMonocular(const cv::Mat &im, const double &timestamp)
         cerr << "ERROR: you called TrackMonocular but input sensor was not set to Monocular." << endl;
         exit(-1);
     }
+
+    mpViewer->SetOriginalVideo(im);
 
     // Check mode change
     {

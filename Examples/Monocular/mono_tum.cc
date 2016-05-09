@@ -28,9 +28,7 @@
 
 #include<System.h>
 
-using namespace std;
-
-void LoadImages(const string &strFile, vector<string> &vstrImageFilenames,
+using namespace std; void LoadImages(const string &strFile, vector<string> &vstrImageFilenames,
                 vector<double> &vTimestamps);
 
 int main(int argc, char **argv)
@@ -45,12 +43,14 @@ int main(int argc, char **argv)
     vector<string> vstrImageFilenames;
     vector<double> vTimestamps;
     string strFile = string(argv[3])+"/rgb.txt";
+    
     LoadImages(strFile, vstrImageFilenames, vTimestamps);
+    // now filenames and timestamps has data
 
     int nImages = vstrImageFilenames.size();
 
     // Create SLAM system. It initializes all system threads and gets ready to process frames.
-    ORB_SLAM2::System SLAM(argv[1],argv[2],ORB_SLAM2::System::MONOCULAR,true);
+    ORB_SLAM2::System SLAM(argv[1],argv[2],ORB_SLAM2::System::MONOCULAR,true); //vocab yaml mono true
 
     // Vector for tracking time statistics
     vector<float> vTimesTrack;
@@ -62,6 +62,7 @@ int main(int argc, char **argv)
 
     // Main loop
     cv::Mat im;
+    cv::Mat cameraPose;
     for(int ni=0; ni<nImages; ni++)
     {
         // Read image from file
@@ -82,7 +83,7 @@ int main(int argc, char **argv)
 #endif
 
         // Pass the image to the SLAM system
-        SLAM.TrackMonocular(im,tframe);
+        SLAM.TrackMonocular(im,tframe); //lets look later how the system uses that "timestamp"
 
 #ifdef COMPILEDWITHC11
         std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
@@ -90,19 +91,31 @@ int main(int argc, char **argv)
         std::chrono::monotonic_clock::time_point t2 = std::chrono::monotonic_clock::now();
 #endif
 
+        cameraPose = SLAM.GetCurrentCameraMatrix();
+
+        std::filebuf logbuf ;
+        logbuf.open( "cameraPose.txt", std::ios::out|std::ios::trunc) ;
+        std::streambuf* old_clog_buf = std::clog.rdbuf( &logbuf ) ;
+
+        clog << "CameraPose = "<< endl << " "  << cameraPose << endl << endl;
+
+        std::clog << std::flush ;
+        std::clog.rdbuf( old_clog_buf ) ;
+
         double ttrack= std::chrono::duration_cast<std::chrono::duration<double> >(t2 - t1).count();
 
+        // recording the time stats
         vTimesTrack[ni]=ttrack;
 
         // Wait to load the next frame
         double T=0;
         if(ni<nImages-1)
-            T = vTimestamps[ni+1]-tframe;
+            T = vTimestamps[ni+1]-tframe; //timestamp next frame - timestamp this frame is the time to wait!
         else if(ni>0)
-            T = tframe-vTimestamps[ni-1];
+            T = tframe-vTimestamps[ni-1]; //this might be final frame, wait for time this frame - last frame (why~)
 
-        if(ttrack<T)
-            usleep((T-ttrack)*1e6);
+        if(ttrack<T) //this should happen, or else quickly process next one..
+            usleep((T-ttrack)*1e6); //the wait
     }
 
     // Stop all threads
@@ -120,11 +133,12 @@ int main(int argc, char **argv)
     cout << "mean tracking time: " << totaltime/nImages << endl;
 
     // Save camera trajectory
-    SLAM.SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
+    SLAM.SaveTrajectoryTUM("KeyFrameTrajectory.txt");
 
     return 0;
 }
 
+//only put in the array?
 void LoadImages(const string &strFile, vector<string> &vstrImageFilenames, vector<double> &vTimestamps)
 {
     ifstream f;

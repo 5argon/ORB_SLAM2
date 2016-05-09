@@ -1,0 +1,6 @@
+/home/sargon/ORB_SLAM2/CMakeFiles/ORB_SLAM2.dir
+/home/sargon/ORB_SLAM2/CMakeFiles/mono_kitti.dir
+/home/sargon/ORB_SLAM2/CMakeFiles/mono_tum.dir
+/home/sargon/ORB_SLAM2/CMakeFiles/mono_webcam.dir
+/home/sargon/ORB_SLAM2/CMakeFiles/rgbd_tum.dir
+/home/sargon/ORB_SLAM2/CMakeFiles/stereo_kitti.dir

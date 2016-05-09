@@ -106,6 +106,12 @@ public:
     // See format details at: http://www.cvlibs.net/datasets/kitti/eval_odometry.php
     void SaveTrajectoryKITTI(const string &filename);
 
+    // 5argon : Get the current camera pose matrix! Call it after tracking!
+    cv::Mat GetCurrentCameraMatrix();
+
+    void FeedOutputDisplay(cv::Mat im);
+    void FeedAuxDisplay(cv::Mat im);
+
     // TODO: Save/Load functions
     // SaveMap(const string &filename);
     // LoadMap(const string &filename);

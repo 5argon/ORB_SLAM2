@@ -42,6 +42,10 @@ class Viewer
 public:
     Viewer(System* pSystem, FrameDrawer* pFrameDrawer, MapDrawer* pMapDrawer, Tracking *pTracking, const string &strSettingPath);
 
+    void SetOriginalVideo(const cv::Mat im);
+    void SetResultVideo(const cv::Mat im);
+    void SetAuxVideo(const cv::Mat im);
+
     // Main thread function. Draw points, keyframes, the current camera pose and the last processed
     // frame. Drawing is refreshed according to the camera fps. We use Pangolin.
     void Run();
@@ -64,6 +68,10 @@ private:
     FrameDrawer* mpFrameDrawer;
     MapDrawer* mpMapDrawer;
     Tracking* mpTracker;
+
+    cv::Mat originalVideo;
+    cv::Mat resultVideo;
+    cv::Mat auxVideo;
 
     // 1/fps in ms
     double mT;

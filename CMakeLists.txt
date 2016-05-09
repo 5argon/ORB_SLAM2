@@ -95,3 +95,7 @@ add_executable(mono_kitti
 Examples/Monocular/mono_kitti.cc)
 target_link_libraries(mono_kitti ${PROJECT_NAME})
 
+add_executable(mono_webcam
+Examples/Monocular/mono_webcam.cc)
+target_link_libraries(mono_webcam ${PROJECT_NAME})
+
