@@ -60,6 +60,11 @@ public:
 
     void Release();
 
+    pangolin::Var<bool>* menuPause;
+    pangolin::Var<bool>* menuStep;
+    pangolin::Var<bool>* menuContinue;
+
+
 private:
 
     bool Stop();
@@ -95,5 +100,3 @@ private:
 
 
 #endif // VIEWER_H
-	
-

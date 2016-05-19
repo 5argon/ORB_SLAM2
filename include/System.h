@@ -109,12 +109,19 @@ public:
     // 5argon : Get the current camera pose matrix! Call it after tracking!
     cv::Mat GetCurrentCameraMatrix();
 
+    // 5argon : This get all points detected right now.
+    vector<MapPoint*> GetAllMapPoints();
+
     void FeedOutputDisplay(cv::Mat im);
     void FeedAuxDisplay(cv::Mat im);
 
     // TODO: Save/Load functions
     // SaveMap(const string &filename);
     // LoadMap(const string &filename);
+
+    // The viewer draws the map and the current camera pose. It uses Pangolin.
+    // 5argon : Lazy public, will fix later
+    Viewer* mpViewer;
 
 private:
 
@@ -142,8 +149,6 @@ private:
     // a pose graph optimization and full bundle adjustment (in a new thread) afterwards.
     LoopClosing* mpLoopCloser;
 
-    // The viewer draws the map and the current camera pose. It uses Pangolin.
-    Viewer* mpViewer;
 
     FrameDrawer* mpFrameDrawer;
     MapDrawer* mpMapDrawer;

@@ -74,6 +74,15 @@ void MapDrawer::DrawMapPoints()
     glEnd();
 }
 
+void MapDrawer::DrawMyPoints()
+{
+    glPointSize(15);
+    glBegin(GL_POINTS);
+    glColor3f(1.0,1.0,0.0);
+    glVertex3f(0,0,0);
+    glEnd();
+}
+
 void MapDrawer::DrawKeyFrames(const bool bDrawKF, const bool bDrawGraph)
 {
     const float &w = mKeyFrameSize;

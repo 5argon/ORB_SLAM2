@@ -86,6 +86,9 @@ void Viewer::Run()
     pangolin::Var<bool> menuShowGraph("menu.Show Graph",true,true);
     pangolin::Var<bool> menuLocalizationMode("menu.Localization Mode",false,true);
     pangolin::Var<bool> menuReset("menu.Reset",false,false);
+     menuPause = new pangolin::Var<bool>("menu.Pause",false,false);
+     menuStep = new pangolin::Var<bool>("menu.Step",false,false);
+     menuContinue = new pangolin::Var<bool>("menu.Continue",false,false);
 
     // Define Camera Render Object (for view / scene browsing)
     pangolin::OpenGlRenderState s_cam(
@@ -101,7 +104,7 @@ void Viewer::Run()
     pangolin::OpenGlMatrix Twc;
     Twc.SetIdentity();
 
-    cv::namedWindow("ORB-SLAM2: asjidajdaiCurrent Frame");
+    cv::namedWindow("ORB-SLAM2: Current Frame");
     cv::namedWindow("Original",cv::WINDOW_AUTOSIZE);
     cv::namedWindow("Result",cv::WINDOW_AUTOSIZE);
     cv::namedWindow("Aux",cv::WINDOW_AUTOSIZE);
@@ -148,12 +151,15 @@ void Viewer::Run()
         if(menuShowKeyFrames || menuShowGraph)
             mpMapDrawer->DrawKeyFrames(menuShowKeyFrames,menuShowGraph);
         if(menuShowPoints)
+        {
             mpMapDrawer->DrawMapPoints();
+            mpMapDrawer->DrawMyPoints();
+        }
 
         pangolin::FinishFrame();
 
         cv::Mat im = mpFrameDrawer->DrawFrame();
-        cv::imshow("ORB-SLAM2: Current Frame",im);
+        cv::imshow("ORB-SLAM2: jCurrent Frame",im);
         if(!originalVideo.empty())
         {
             cv::imshow("Original",originalVideo);
